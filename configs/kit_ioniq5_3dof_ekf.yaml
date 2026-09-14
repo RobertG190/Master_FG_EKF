@@ -1,0 +1,40 @@
+run:
+  name: kit_ioniq5_dynamic_a3_3dof_ekf
+  seed: 42
+  output_root: results
+
+dataset:
+  type: canonical_hdf5
+  path: data/processed/kit_ioniq5/dynamic_driving_asphalt_a_cobble_1.h5
+  stride: 10
+  enabled_sources:
+    - input.steering_angle
+    - input.longitudinal_acceleration_rear_axle
+    - sensor.longitudinal_velocity
+    - sensor.yaw_rate
+    - sensor.lateral_acceleration_rear_axle
+
+model:
+  type: nonlinear_single_track_3dof_fiala
+  parameter_file: configs/vehicles/kit_ioniq5.yaml
+
+# Initial values only. Later identify sensor noise from the standstill runs.
+sensors:
+  longitudinal_velocity:
+    sigma_mps: 0.05
+  yaw_rate:
+    sigma_radps: 0.005
+  lateral_acceleration:
+    location: rear_axle
+    sigma_mps2: 0.10
+
+estimator:
+  type: extended_kalman_filter_3dof
+  initial_time_s: 0.0
+  # x = [vx, vy, r]
+  initial_state: [10.0, 0.0, 0.0]
+  initial_std: [5.0, 1.0, 0.10]
+  initial_steering_angle_rad: 0.0
+  initial_longitudinal_acceleration_rear_axle_mps2: 0.0
+  # Continuous process-noise std for [vx, vy, r]. Start values, not identified yet.
+  process_noise_std_per_sqrt_s: [0.30, 0.30, 0.05]

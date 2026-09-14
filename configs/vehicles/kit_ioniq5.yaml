@@ -1,0 +1,18 @@
+# Values from parameter.m of DOI 10.35097/44a91t97pmnha1k9
+mass_kg: 2254.0
+yaw_inertia_kgm2: 2193.0
+lf_m: 1.563
+lr_m: 1.437
+cornering_stiffness_front_nprad: 234008.0
+cornering_stiffness_rear_nprad: 234008.0
+min_vx_mps: 3.0
+road_friction_coefficient: 0.8
+
+metadata:
+  vehicle: Hyundai IONIQ 5 RWD
+  wheelbase_m: 3.0
+  track_width_m: 1.65
+  cg_height_m: 0.4
+  tire_dynamic_radius_m: 0.36
+  mu_asphalt_a: 1.1
+  mu_cobblestone: 0.7

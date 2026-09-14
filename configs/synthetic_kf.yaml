@@ -1,0 +1,44 @@
+run:
+  name: synthetic_2dof_kf
+  seed: 42
+  output_root: results
+
+# Ground-truth generator only. Later this can be a real CSV adapter or a high-fidelity plant.
+dataset:
+  type: synthetic_2dof
+  duration_s: 30.0
+  dt_s: 0.01
+  vx_base_mps: 18.0
+  vx_variation_mps: 3.0
+  steering_amplitude_rad: 0.025
+  steering_frequency_hz: 0.35
+  # Direct continuous-time process disturbance on [beta, r].
+  truth_process_std: [0.0005, 0.001]
+
+model:
+  type: linear_single_track_2dof
+  parameters:
+    mass_kg: 1500.0
+    yaw_inertia_kgm2: 2500.0
+    lf_m: 1.2
+    lr_m: 1.6
+    cornering_stiffness_front_nprad: 80000.0
+    cornering_stiffness_rear_nprad: 80000.0
+    min_vx_mps: 2.0
+
+sensors:
+  yaw_rate:
+    sigma_radps: 0.004
+  lateral_acceleration:
+    sigma_mps2: 0.08
+
+estimator:
+  type: kalman_filter
+  initial_time_s: 0.0
+  initial_state: [0.0, 0.0]
+  initial_std: [0.08, 0.08]
+  initial_steering_angle_rad: 0.0
+  initial_longitudinal_velocity_mps: 18.0
+
+  # q_beta [rad/sqrt(s)], q_r [(rad/s)/sqrt(s)] for the chosen direct-noise model.
+  process_noise_std_per_sqrt_s: [0.006, 0.03]

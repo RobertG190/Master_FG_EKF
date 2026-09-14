@@ -1,0 +1,36 @@
+run:
+  name: kit_ioniq5_dynamic_a3_2dof_kf
+  seed: 42
+  output_root: results
+
+dataset:
+  type: canonical_hdf5
+  path: data/processed/kit_ioniq5/dynamic_driving_asphalt_a_cobble_1.h5
+  # The raw dataset is 1000 Hz. stride=10 gives 100 Hz without changing the
+  # canonical file itself. Set to 1 when you explicitly want full rate.
+  stride: 10
+  enabled_sources:
+    - input.steering_angle
+    - input.longitudinal_velocity
+    - sensor.yaw_rate
+    - sensor.lateral_acceleration_rear_axle
+
+model:
+  type: linear_single_track_2dof
+  parameter_file: configs/vehicles/kit_ioniq5.yaml
+
+sensors:
+  yaw_rate:
+    sigma_radps: 0.005
+  lateral_acceleration:
+    location: rear_axle
+    sigma_mps2: 0.10
+
+estimator:
+  type: kalman_filter
+  initial_time_s: 0.0
+  initial_state: [0.0, 0.0]
+  initial_std: [0.08, 0.08]
+  initial_steering_angle_rad: 0.0
+  initial_longitudinal_velocity_mps: 10.0
+  process_noise_std_per_sqrt_s: [0.006, 0.03]

@@ -1,0 +1,66 @@
+run:
+  name: golf_gte_constant_001_joint_2dof_ekf
+  seed: 42
+  output_root: results
+
+dataset:
+  type: canonical_hdf5
+  path: data/processed/golf_gte/001_Asphalt_feucht_Konstantfahrt_30_kmh.h5
+
+  # Golf source files are already at 50 Hz.
+  stride: 1
+
+  enabled_sources:
+    - input.steering_angle
+    - input.longitudinal_velocity
+    - sensor.yaw_rate
+    - sensor.lateral_acceleration
+
+model:
+  type: linear_single_track_parameter_estimation
+  parameter_file: configs/vehicles/golf_gte.yaml
+
+sensors:
+  yaw_rate:
+    sigma_radps: 0.005
+
+  lateral_acceleration:
+    location: cog
+    sigma_mps2: 0.010
+
+estimator:
+  type: extended_kalman_filter_2dof
+
+  initial_time_s: 0.0
+
+  # State order:
+  # [beta_rad, yaw_rate_radps, Cf_N_per_rad, Cr_N_per_rad]
+  #
+  # Cf/Cr below are only PRIOR INITIAL GUESSES, not ground truth.
+  initial_state:
+    - 0.0
+    - 0.0
+    - 1000000.0
+    - 1000000.0
+
+  # Initial 1-sigma uncertainty in the same state order.
+  initial_std:
+    - 0.08
+    - 0.08
+    - 50000.0
+    - 50000.0
+
+  initial_steering_angle_rad: 0.0
+  initial_longitudinal_velocity_mps: 8.33
+
+  # Continuous-time random-walk/process-noise standard deviations:
+  # [rad/sqrt(s), (rad/s)/sqrt(s), (N/rad)/sqrt(s), (N/rad)/sqrt(s)]
+  #
+  # The Cf/Cr values are intentionally small relative to their initial
+  # uncertainty: parameters should be mostly persistent and learned from data,
+  # not freely wander.
+  process_noise_std_per_sqrt_s:
+    - 0.0006
+    - 0.3
+    - 100.0
+    - 100.0

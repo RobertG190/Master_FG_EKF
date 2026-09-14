@@ -1,0 +1,19 @@
+# Golf GTE parameters available from the ETAS/ADMA source HDF5 metadata.
+# Cf and Cr are deliberately absent: they are estimated states in the joint EKF.
+
+mass_kg: 1720.0
+yaw_inertia_kgm2: 2066.0
+lf_m: 1.16
+lr_m: 1.47
+
+# Dynamic bicycle model is not meaningful close to standstill.
+min_vx_mps: 3.0
+
+metadata:
+  vehicle: Golf GTE
+  wheelbase_m: 2.63
+  cg_height_m: 0.58
+  tire_radius_m: 0.3116
+  steering_ratio_reference: 14.8
+  road_friction_reference: 0.9
+  yaw_inertia_source: estimated
